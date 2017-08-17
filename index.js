@@ -100,9 +100,10 @@ export default function huozi(textSequence, layoutOptions, onSequence) {
 
   // 在末尾插入一个表意文字（CJK）空格，hack在文本以西文字符结尾时结尾的西文不会显示的问题。
   for (const char of [...textSequence, { fontSize: 12, character: '　' }]) {
-
+    
     // 读取字符数据
     const { fontSize: charFontSize, character } = char;
+    const isSpace = character == " ";
 
     // 处理行内上一个字符是标点（已预先压缩），但本字符是非标点（因而需要取消之前的压缩）的情况
     if (FLAG_INLINE_COMPRESSION && lastIsPunctuation && !BIAODIAN.includes(character)) {
@@ -265,6 +266,7 @@ export default function huozi(textSequence, layoutOptions, onSequence) {
 
 // 独立处理西文文本的排版，返回的数据中文本两侧无空格
 function processWesternText(textSequence, { fontFamily, gridSize, yInterval, letterSpacing }, currentX, currentY, currentRow, maxWidth, row) {
+  
   const layoutSequence = [];
   let maxFontSize = gridSize;
   let word = '';
@@ -317,6 +319,12 @@ function processWesternText(textSequence, { fontFamily, gridSize, yInterval, let
 
         currentX += char.width + letterSpacing;
       }
+      layoutSequence.push({
+        ...layoutSequence[layoutSequence.length - 1],
+        character: " ",
+        x: layoutSequence[layoutSequence.length - 1].x + layoutSequence[layoutSequence.length - 1].width,
+        width: currentX - layoutSequence[layoutSequence.length - 1].x + layoutSequence[layoutSequence.length - 1].width,
+      });
 
       currentX += 0.35 * gridSize;
 
@@ -334,6 +342,6 @@ function processWesternText(textSequence, { fontFamily, gridSize, yInterval, let
     }
 
   }
-
+console.log(layoutSequence)
   return [layoutSequence, currentX - 0.35 * gridSize, currentY, currentRow, isMultiLine];
 }
