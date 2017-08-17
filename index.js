@@ -25,6 +25,11 @@ import { BIAOHAO, DIANHAO, BIAODIAN, BIAODIANVALIDATEND, BIAODIANVALIDATSTART, I
 import { isCJK } from './lib/isCJK';
 const canvas = document.createElement('canvas');
 const context = canvas.getContext('2d');
+if (String.prototype.includes === undefined) {
+  String.prototype.includes = function (val) {
+    return this.indexOf(val) >= 0
+  }
+}
 
 // 检测中文字符宽度是否等于字号
 context.font = '18px sans-serif';
@@ -274,7 +279,9 @@ function processWesternText(textSequence, { fontFamily, gridSize, yInterval, let
     });
   }
 
-  for (const char of textSequence) {
+
+  for (let index = 0; index < textSequence.length; index++) {
+    const char = textSequence[index];
     const { fontSize: charFontSize, character } = char;
 
     // 更新行高
@@ -296,7 +303,8 @@ function processWesternText(textSequence, { fontFamily, gridSize, yInterval, let
         }
       }
 
-      for (const char of wordChar) {
+      for (let index2 = 0; index2 < wordChar.length; index2++) {
+        const char = wordChar[index2];
         const { fontSize: charFontSize, character } = char;
 
         // 确定文字位置并添加到返回数组中
