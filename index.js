@@ -342,6 +342,5 @@ function processWesternText(textSequence, { fontFamily, gridSize, yInterval, let
     }
 
   }
-console.log(layoutSequence)
   return [layoutSequence, currentX - 0.35 * gridSize, currentY, currentRow, isMultiLine];
 }
